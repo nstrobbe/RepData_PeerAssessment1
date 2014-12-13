@@ -132,10 +132,11 @@ Here, missing data will be replaced by the mean number of steps per 5-minute
 interval. 
 ```{r}
 # Make data frame containing only the missing intervals
-df.missing <- data.frame(interval_new=data$interval_new[missing])
+df.missing <- data.frame(interval_new=data$interval_new[missing],date=data$date[missing])
 # Merge this with the average number of steps per interval. This merged data frame
 # will now contain the average number of steps for each missing interval
-merged.df <- merge(df.missing, average.steps.per.interval, by="interval_new")
+merged.df <- merge(df.missing, average.steps.per.interval, by="interval_new") %>%
+  arrange(date,interval_new)
 # Now replace the missing data. Store it in a new variable.
 data.filled <- data
 data.filled$steps[missing] <- merged.df$m

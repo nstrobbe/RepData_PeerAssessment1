@@ -199,10 +199,11 @@ interval.
 
 ```r
 # Make data frame containing only the missing intervals
-df.missing <- data.frame(interval_new=data$interval_new[missing])
+df.missing <- data.frame(interval_new=data$interval_new[missing],date=data$date[missing])
 # Merge this with the average number of steps per interval. This merged data frame
 # will now contain the average number of steps for each missing interval
-merged.df <- merge(df.missing, average.steps.per.interval, by="interval_new")
+merged.df <- merge(df.missing, average.steps.per.interval, by="interval_new") %>%
+  arrange(date,interval_new)
 # Now replace the missing data. Store it in a new variable.
 data.filled <- data
 data.filled$steps[missing] <- merged.df$m
@@ -211,13 +212,13 @@ head(data.filled)
 ```
 
 ```
-##   steps       date interval        interval_new
-## 1 1.717 2012-10-01        0 2014-12-13 00:00:00
-## 2 1.717 2012-10-01        5 2014-12-13 00:05:00
-## 3 1.717 2012-10-01       10 2014-12-13 00:10:00
-## 4 1.717 2012-10-01       15 2014-12-13 00:15:00
-## 5 1.717 2012-10-01       20 2014-12-13 00:20:00
-## 6 1.717 2012-10-01       25 2014-12-13 00:25:00
+##     steps       date interval        interval_new
+## 1 1.71698 2012-10-01        0 2014-12-13 00:00:00
+## 2 0.33962 2012-10-01        5 2014-12-13 00:05:00
+## 3 0.13208 2012-10-01       10 2014-12-13 00:10:00
+## 4 0.15094 2012-10-01       15 2014-12-13 00:15:00
+## 5 0.07547 2012-10-01       20 2014-12-13 00:20:00
+## 6 2.09434 2012-10-01       25 2014-12-13 00:25:00
 ```
 
 We can now have a look at the effect of imputing the missing values. First we
@@ -234,12 +235,12 @@ head(steps.per.day.filled)
 ## Source: local data frame [6 x 2]
 ## 
 ##         date tot_steps
-## 1 2012-10-01     137.7
-## 2 2012-10-02     126.0
-## 3 2012-10-03   11352.0
-## 4 2012-10-04   12116.0
-## 5 2012-10-05   13294.0
-## 6 2012-10-06   15420.0
+## 1 2012-10-01     10766
+## 2 2012-10-02       126
+## 3 2012-10-03     11352
+## 4 2012-10-04     12116
+## 5 2012-10-05     13294
+## 6 2012-10-06     15420
 ```
 
 
@@ -258,7 +259,7 @@ mean.steps.per.day.filled = mean(steps.per.day.filled$tot_steps)
 median.steps.per.day.filled = median(steps.per.day.filled$tot_steps)
 ```
 The mean and median number of steps per day that correspond to this are
-10766 and 11015.
+10766 and 10766.
 
 The effect of imputing can be better viewed in a relative way:
 
@@ -279,7 +280,7 @@ median.effect
 ```
 
 ```
-## [1] 0.02322
+## [1] 0.0001104
 ```
 The effect on the mean is exactly zero, as we would expect given that we have
 used the mean to impute the missing values. 
@@ -317,13 +318,13 @@ head(data.filled)
 ```
 
 ```
-##   steps       date interval        interval_new day_type
-## 1 1.717 2012-10-01        0 2014-12-13 00:00:00  weekday
-## 2 1.717 2012-10-01        5 2014-12-13 00:05:00  weekday
-## 3 1.717 2012-10-01       10 2014-12-13 00:10:00  weekday
-## 4 1.717 2012-10-01       15 2014-12-13 00:15:00  weekday
-## 5 1.717 2012-10-01       20 2014-12-13 00:20:00  weekday
-## 6 1.717 2012-10-01       25 2014-12-13 00:25:00  weekday
+##     steps       date interval        interval_new day_type
+## 1 1.71698 2012-10-01        0 2014-12-13 00:00:00  weekday
+## 2 0.33962 2012-10-01        5 2014-12-13 00:05:00  weekday
+## 3 0.13208 2012-10-01       10 2014-12-13 00:10:00  weekday
+## 4 0.15094 2012-10-01       15 2014-12-13 00:15:00  weekday
+## 5 0.07547 2012-10-01       20 2014-12-13 00:20:00  weekday
+## 6 2.09434 2012-10-01       25 2014-12-13 00:25:00  weekday
 ```
 
 ```r
@@ -356,13 +357,13 @@ head(average.steps.per.interval.by.daytype)
 ## Source: local data frame [6 x 3]
 ## Groups: day_type
 ## 
-##   day_type        interval_new     m
-## 1  weekday 2014-12-13 00:00:00 5.438
-## 2  weekday 2014-12-13 00:05:00 3.816
-## 3  weekday 2014-12-13 00:10:00 3.571
-## 4  weekday 2014-12-13 00:15:00 3.593
-## 5  weekday 2014-12-13 00:20:00 3.504
-## 6  weekday 2014-12-13 00:25:00 4.727
+##   day_type        interval_new       m
+## 1  weekday 2014-12-13 00:00:00 2.25115
+## 2  weekday 2014-12-13 00:05:00 0.44528
+## 3  weekday 2014-12-13 00:10:00 0.17317
+## 4  weekday 2014-12-13 00:15:00 0.19790
+## 5  weekday 2014-12-13 00:20:00 0.09895
+## 6  weekday 2014-12-13 00:25:00 1.59036
 ```
 
 Let's now make the actual plot. I will use qplot here as it has nice facetting
