@@ -283,8 +283,10 @@ median.effect
 ## [1] 0.0001104
 ```
 The effect on the mean is exactly zero, as we would expect given that we have
-used the mean to impute the missing values. 
-The effect on the median is small, only a few percent. 
+used the mean to impute the missing values, and given that if values are missing
+in this dataset, they are missing for the full day.  
+The effect on the median is very small, only 1 step in absolute numbers, which
+corresponds to a sub permille effect. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -297,7 +299,6 @@ a weekday or a weekend day.
 # define function that returns "weekend" or "weekday" for a given date
 day.type <- function(date){
   day <- weekdays(date)
-  
   day.type.per.item <- function(item){
     if(item %in% c("Saturday","Sunday")){
       "weekend"
@@ -313,7 +314,7 @@ data.filled <- mutate(data.filled,
                       date = as.Date(date),
                       day_type = day.type(date),
                       day_type = as.factor(day_type))
-
+# Have a look at the output
 head(data.filled)
 ```
 
@@ -328,6 +329,7 @@ head(data.filled)
 ```
 
 ```r
+# check the class
 class(data.filled$date)
 ```
 
@@ -336,6 +338,7 @@ class(data.filled$date)
 ```
 
 ```r
+# check the class
 class(data.filled$day_type)
 ```
 
@@ -344,7 +347,7 @@ class(data.filled$day_type)
 ```
 
 Now we can make a time series plot to see the average daily step pattern, broken
-up into two categories.
+up into two categories. We use the same procedure as before. 
 
 
 ```r
@@ -387,5 +390,5 @@ qplot(interval_new, m,
 ![plot of chunk timeseriesdaytype](figure/timeseriesdaytype.png) 
 
 We can clearly see a difference in the daily activity pattern. On weekdays the
-subject gets up earlier, and does some activity that records many steps. 
+subject gets up earlier, and then does some activity that records many steps. 
 On weekends there is more activity spread out during the day. 
